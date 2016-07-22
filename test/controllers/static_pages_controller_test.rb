@@ -2,7 +2,7 @@ require 'test_helper'
 
 class StaticPagesControllerTest < ActionDispatch::IntegrationTest
   def setup
-    @base_title = "Ruby on Rails Tutorial Sample App"
+    @base_title = "JTwit"
   end
 
   test "should get root" do
