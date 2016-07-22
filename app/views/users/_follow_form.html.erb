@@ -1,0 +1,12 @@
+<!-- if curr user is looking at his own page do nothing
+if user is following someone alrdy display unfollow otherwise display
+follow-->
+<% unless current_user?(@user) %>
+  <div id="follow_form">
+  <% if current_user.following?(@user) %>
+    <%= render 'unfollow' %>
+  <% else %>
+    <%= render 'follow' %>
+  <% end %>
+  </div>
+<% end %>

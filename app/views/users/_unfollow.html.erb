@@ -1,0 +1,7 @@
+<!-- @user.id refers to user of the page 
+remote is ajax which autoupdates the page without refreshing -->
+<%= form_for(current_user.active_relationships.find_by(followed_id: @user.id),
+             html: { method: :delete },
+             remote: true) do |f| %>
+  <%= f.submit "Unfollow", class: "btn" %>
+<% end %>

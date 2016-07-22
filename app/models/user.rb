@@ -1,5 +1,18 @@
 class User < ApplicationRecord
   has_many :microposts, dependent: :destroy
+
+  has_many :active_relationships, class_name:  "Relationship",
+                                foreign_key: "follower_id",
+                                dependent:   :destroy
+  has_many :following, through: :active_relationships, source: :followed 
+  # following -> list of users self is following
+
+  has_many :passive_relationships, class_name: "Relationship",
+                                  foreign_key: "followed_id",
+                                  dependent:    :destroy
+  has_many :followers, through: :passive_relationships, source: :follower 
+  # followers -> users following self
+
   attr_accessor :remember_token, :activation_token, :reset_token
   before_save   :downcase_email 
   before_create :create_activation_token 
@@ -72,6 +85,29 @@ class User < ApplicationRecord
   # See "Following users" for the full implementation.
   def feed
     Micropost.where("user_id = ?", id)
+  end
+
+  # follows a user
+  def follow(other_user)
+    self.active_relationships.create(followed_id: other_user.id)
+  end
+
+  # unfollows a user
+  def unfollow(other_user)
+    self.active_relationships.find_by(followed_id: other_user.id).destroy
+  end
+
+  # returns true if a self is following other_user
+  def following?(other_user)
+    self.following.include?(other_user)
+  end
+
+  # returns a user's feed
+  def feed
+    following_ids = "SELECT followed_id FROM relationships
+                    WHERE  follower_id = :user_id"
+    Micropost.where("user_id IN (#{following_ids})
+                     OR user_id = :user_id", user_id: id)
   end
 
   private
