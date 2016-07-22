@@ -1,6 +1,7 @@
 # JTwit application
 
 This is a twitter inspired web application
+See deployment here https://jtwit.herokuapp.com/
 
 ## Changelog
 
